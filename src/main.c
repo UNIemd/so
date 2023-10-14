@@ -22,9 +22,10 @@
 
 #define FILE_NAME "file.txt"
 
-int writeSpeed(int BytesToWrite)
+void writeSpeed(int BytesToWrite)
 {
     int fd, written, wr;
+    double mega = BytesToWrite / (1024.0 * 1024);
 
     char buf[1024];
 
@@ -51,15 +52,13 @@ int writeSpeed(int BytesToWrite)
 
     stopCounting();
     printResourceUsage(RUSAGE_SELF);
-
-    freeData();
-
-    return 0;
+    printf("\nIl programma ha scritto %.3f Mbytes in %.3f sec\n ==> %.3f MB/s\n", mega, getRealTime(), mega / getRealTime());
 }
 
 void readSpeed(int BytesToRead)
 {
     int fd, readed, rr;
+    double mega = BytesToRead / (1024.0 * 1024);
 
     char buf[1024];
 
@@ -81,6 +80,7 @@ void readSpeed(int BytesToRead)
 
     stopCounting();
     printResourceUsage(RUSAGE_SELF);
+    printf("\nIl programma ha scritto %.3f Mbytes in %.3f sec\n ==> %.3f MB/s\n", mega, getRealTime(), mega / getRealTime());
 }
 
 int main(int argc, char **argv)
