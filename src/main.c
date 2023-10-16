@@ -14,6 +14,8 @@
 #include <sys/wait.h>
 #include <errno.h>
 
+#include <fcntl.h>
+
 int main () {
 
     int fd[2];
@@ -41,6 +43,7 @@ int main () {
         char ch[1024];
         int bytesRead;
         int status; // prendi il valore di uscita dal processo.
+        int fp_out; // scrivi in un file l'output di ls (che passa per il pipe)
         
         waitpid(c_pid, &status, WUNTRACED); // aspetta la fine del processo figlio.
         close(fd[1]); // non ci serve. chiudi.
@@ -58,6 +61,15 @@ int main () {
          */
         ch[bytesRead] = '\0';
         printf("\n\n%s\n\n", ch);
+        
+        fp_out = open("file.txt", O_WRONLY | O_CREAT, 00700);
+
+        if (write(fp_out, ch, bytesRead) == bytesRead)
+            printf("Scrittura su file andata completamente a buon fine\n");
+        else
+            fprintf(stderr, "Qualche errore nella scrittura su file\n");
+
+        close(fp_out);
         close(fd[0]); // abbiamo finito di usarlo. chiudi.
     }
 
